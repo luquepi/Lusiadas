@@ -1,0 +1,1458 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Lus&#237;adas - or&#225;culo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <style>
+        @font-face {
+            src: url(https://cdn.jsdelivr.net/gh/Tyrrrz/DiscordFonts@master/whitney-300.woff);
+            font-family: Whitney;
+            font-weight: 300;
+        }
+
+        @font-face {
+            src: url(https://cdn.jsdelivr.net/gh/Tyrrrz/DiscordFonts@master/whitney-400.woff);
+            font-family: Whitney;
+            font-weight: 400;
+        }
+
+        @font-face {
+            src: url(https://cdn.jsdelivr.net/gh/Tyrrrz/DiscordFonts@master/whitney-500.woff);
+            font-family: Whitney;
+            font-weight: 500;
+        }
+
+        @font-face {
+            src: url(https://cdn.jsdelivr.net/gh/Tyrrrz/DiscordFonts@master/whitney-600.woff);
+            font-family: Whitney;
+            font-weight: 600;
+        }
+
+        @font-face {
+            src: url(https://cdn.jsdelivr.net/gh/Tyrrrz/DiscordFonts@master/whitney-700.woff);
+            font-family: Whitney;
+            font-weight: 700;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            background-color: #36393e;
+            color: #dcddde;
+            font-family: Whitney, "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 17px;
+            font-weight: 400;
+        }
+
+        a {
+            color: #00aff4;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        img {
+            object-fit: contain;
+            image-rendering: high-quality;
+            image-rendering: -webkit-optimize-contrast;
+        }
+
+        .preamble {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            max-width: 100%;
+            padding: 1rem;
+        }
+
+        .preamble__guild-icon-container {
+            grid-column: 1;
+        }
+
+        .preamble__guild-icon {
+            max-width: 88px;
+            max-height: 88px;
+        }
+
+        .preamble__entries-container {
+            grid-column: 2;
+            margin-left: 1rem;
+        }
+
+        .preamble__entry {
+            margin-bottom: 0.15rem;
+            color: #ffffff;
+            font-size: 1.4rem;
+        }
+
+        .preamble__entry--small {
+            font-size: 1rem;
+        }
+
+        .chatlog {
+            padding: 1rem 0;
+            width: 100%;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chatlog__message-group {
+            margin-bottom: 1rem;
+        }
+
+        .chatlog__message-container {
+            background-color: transparent;
+            transition: background-color 1s ease;
+        }
+
+        .chatlog__message-container--highlighted {
+            background-color: rgba(114, 137, 218, 0.2);
+        }
+
+        .chatlog__message-container--pinned {
+            background-color: rgba(249, 168, 37, 0.05);
+        }
+
+        .chatlog__message {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            padding: 0.15rem 0;
+            direction: ltr;
+            unicode-bidi: bidi-override;
+        }
+
+        .chatlog__message:hover {
+            background-color: #32353b;
+        }
+
+        .chatlog__message:hover .chatlog__short-timestamp {
+            display: block;
+        }
+
+        .chatlog__message-aside {
+            grid-column: 1;
+            width: 72px;
+            padding: 0.15rem 0.15rem 0 0.15rem;
+            text-align: center;
+        }
+
+        .chatlog__reference-symbol {
+            height: 10px;
+            margin: 6px 4px 4px 36px;
+            border-left: 2px solid #4f545c;
+            border-top: 2px solid #4f545c;
+            border-radius: 8px 0 0 0;
+        }
+
+        .chatlog__avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        .chatlog__short-timestamp {
+            display: none;
+            color: #a3a6aa;
+            font-size: 0.75rem;
+            font-weight: 500;
+            direction: ltr;
+            unicode-bidi: bidi-override;
+        }
+
+        .chatlog__message-primary {
+            grid-column: 2;
+            min-width: 0;
+        }
+
+        .chatlog__reference {
+            display: flex;
+            margin-bottom: 0.15rem;
+            align-items: center;
+            color: #b5b6b8;
+            font-size: 0.875rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chatlog__reference-avatar {
+            width: 16px;
+            height: 16px;
+            margin-right: 0.25rem;
+            border-radius: 50%;
+        }
+
+        .chatlog__reference-author {
+            margin-right: 0.3rem;
+            font-weight: 600;
+        }
+
+        .chatlog__reference-content {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chatlog__reference-link {
+            cursor: pointer;
+        }
+
+        .chatlog__reference-link * {
+            display: inline;
+            pointer-events: none;
+        }
+
+        .chatlog__reference-link .hljs {
+            display: inline;
+        }
+
+        .chatlog__reference-link:hover {
+            color: #ffffff;
+        }
+
+        .chatlog__reference-link:hover *:not(.chatlog__markdown-spoiler) {
+            color: inherit;
+        }
+
+        .chatlog__reference-edited-timestamp {
+            margin-left: 0.25rem;
+            color: #a3a6aa;
+            font-size: 0.75rem;
+            font-weight: 500;
+            direction: ltr;
+            unicode-bidi: bidi-override;
+        }
+
+        .chatlog__header {
+            margin-bottom: 0.1rem;
+        }
+
+        .chatlog__author {
+            font-weight: 500;
+            color: #ffffff;
+        }
+
+        .chatlog__bot-label {
+            position: relative;
+            top: -0.1rem;
+            margin-left: 0.3rem;
+            padding: 0.05rem 0.3rem;
+            border-radius: 3px;
+            background-color: #5865F2;
+            color: #ffffff;
+            font-size: 0.625rem;
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        .chatlog__timestamp {
+            margin-left: 0.3rem;
+            color: #a3a6aa;
+            font-size: 0.75rem;
+            font-weight: 500;
+            direction: ltr;
+            unicode-bidi: bidi-override;
+        }
+
+        .chatlog__content {
+            padding-right: 1rem;
+            font-size: 0.95rem;
+            word-wrap: break-word;
+        }
+
+        .chatlog__edited-timestamp {
+            margin-left: 0.15rem;
+            color: #a3a6aa;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .chatlog__attachment {
+            position: relative;
+            width: fit-content;
+            margin-top: 0.3rem;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .chatlog__attachment--hidden {
+            cursor: pointer;
+            box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+        }
+
+        .chatlog__attachment--hidden * {
+            pointer-events: none;
+        }
+
+        .chatlog__attachment-spoiler-caption {
+            display: none;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            z-index: 999;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            color: #dcddde;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.05rem;
+        }
+
+        .chatlog__attachment--hidden .chatlog__attachment-spoiler-caption {
+            display: block;
+        }
+
+        .chatlog__attachment--hidden:hover .chatlog__attachment-spoiler-caption {
+            color: #fff;
+        }
+
+        .chatlog__attachment-media {
+            max-width: 45vw;
+            max-height: 500px;
+            vertical-align: top;
+            border-radius: 3px;
+        }
+
+        .chatlog__attachment--hidden .chatlog__attachment-media {
+            filter: blur(44px);
+        }
+
+        .chatlog__attachment-generic {
+            max-width: 520px;
+            width: 100%;
+            height: 40px;
+            padding: 10px;
+            border: 1px solid #292b2f;
+            border-radius: 3px;
+            background-color: #2f3136;
+            overflow: hidden;
+        }
+
+        .chatlog__attachment--hidden .chatlog__attachment-generic {
+            filter: blur(44px);
+        }
+
+        .chatlog__attachment-generic-icon {
+            float: left;
+            width: 30px;
+            height: 100%;
+            margin-right: 10px;
+        }
+
+        .chatlog__attachment-generic-size {
+            color: #72767d;
+            font-size: 12px;
+        }
+
+        .chatlog__attachment-generic-name {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .chatlog__embed {
+            display: flex;
+            margin-top: 0.3rem;
+            max-width: 520px;
+        }
+
+        .chatlog__embed-color-pill {
+            flex-shrink: 0;
+            width: 0.25rem;
+            border-top-left-radius: 3px;
+            border-bottom-left-radius: 3px;
+        }
+
+        .chatlog__embed-color-pill--default {
+            background-color: #202225;
+        }
+
+        .chatlog__embed-content-container {
+            display: flex;
+            flex-direction: column;
+            padding: 0.5rem 0.6rem;
+            border: 1px solid rgba(46, 48, 54, 0.6);
+            border-top-right-radius: 3px;
+            border-bottom-right-radius: 3px;
+            background-color: rgba(46, 48, 54, 0.3);
+        }
+
+        .chatlog__embed-content {
+            display: flex;
+            width: 100%;
+        }
+
+        .chatlog__embed-text {
+            flex: 1;
+        }
+
+        .chatlog__embed-author-container {
+            display: flex;
+            margin-bottom: 0.5rem;
+            align-items: center;
+        }
+
+        .chatlog__embed-author-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 0.5rem;
+            border-radius: 50%;
+        }
+
+        .chatlog__embed-author {
+            color: #ffffff;
+            font-size: 0.875rem;
+            font-weight: 600;
+            direction: ltr;
+            unicode-bidi: bidi-override;
+        }
+
+        .chatlog__embed-author-link {
+            color: #ffffff;
+        }
+
+        .chatlog__embed-title {
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .chatlog__embed-description {
+            color: #dcddde;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .chatlog__embed-fields {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0 0.5rem;
+        }
+
+        .chatlog__embed-field {
+            flex: 0;
+            min-width: 100%;
+            max-width: 506px;
+            padding-top: 0.6rem;
+            font-size: 0.875rem;
+        }
+
+        .chatlog__embed-field--inline {
+            flex: 1;
+            flex-basis: auto;
+            min-width: 50px;
+        }
+
+        .chatlog__embed-field-name {
+            margin-bottom: 0.2rem;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .chatlog__embed-field-value {
+            color: #dcddde;
+            font-weight: 500;
+        }
+
+        .chatlog__embed-thumbnail {
+            flex: 0;
+            max-width: 80px;
+            max-height: 80px;
+            margin-left: 1.2rem;
+            border-radius: 3px;
+        }
+
+        .chatlog__embed-image-container {
+            margin-top: 0.6rem;
+        }
+
+        .chatlog__embed-image {
+            max-width: 500px;
+            max-height: 400px;
+            border-radius: 3px;
+        }
+
+        .chatlog__embed-footer {
+            margin-top: 0.6rem;
+            color: #dcddde;
+        }
+
+        .chatlog__embed-footer-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 0.2rem;
+            border-radius: 50%;
+            vertical-align: middle;
+        }
+
+        .chatlog__embed-footer-text {
+            vertical-align: middle;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .chatlog__embed-plainimage {
+            max-width: 45vw;
+            max-height: 500px;
+            vertical-align: top;
+            border-radius: 3px;
+        }
+
+        .chatlog__embed-spotify {
+            border: 0;
+        }
+
+        .chatlog__embed-youtube-container {
+            margin-top: 0.6rem;
+        }
+
+        .chatlog__embed-youtube {
+            border: 0;
+            border-radius: 3px;
+        }
+
+        .chatlog__sticker {
+            width: 180px;
+            height: 180px;
+        }
+
+        .chatlog__sticker--media {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .chatlog__reactions {
+            display: flex;
+        }
+
+        .chatlog__reaction {
+            display: flex;
+            margin: 0.35rem 0.1rem 0.1rem 0;
+            padding: 0.125rem 0.375rem;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            background-color: #2f3136;
+            align-items: center;
+        }
+
+        .chatlog__reaction:hover {
+            border: 1px solid hsla(0,0%,100%,.2);
+            background-color: transparent;
+        }
+
+        .chatlog__reaction-count {
+            min-width: 9px;
+            margin-left: 0.35rem;
+            color: #b9bbbe;
+            font-size: 0.875rem;
+        }
+
+        .chatlog__reaction:hover .chatlog__reaction-count {
+            color: #dcddde;
+        }
+
+        .chatlog__markdown {
+            max-width: 100%;
+            line-height: 1.3;
+            overflow-wrap: break-word;
+        }
+
+        .chatlog__markdown-preserve {
+            white-space: pre-wrap;
+        }
+
+        .chatlog__markdown-spoiler {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .chatlog__markdown-spoiler--hidden {
+            cursor: pointer;
+            background-color: #202225;
+            color: rgba(0, 0, 0, 0);
+        }
+
+        .chatlog__markdown-spoiler--hidden:hover {
+            background-color: rgba(32, 34, 37, 0.8);
+        }
+
+        .chatlog__markdown-spoiler--hidden::selection {
+            color: rgba(0, 0, 0, 0);
+        }
+
+        .chatlog__markdown-quote {
+            display: flex;
+            margin: 0.05rem 0;
+        }
+
+        .chatlog__markdown-quote-border {
+            margin-right: 0.5rem;
+            border: 2px solid #4f545c;
+            border-radius: 3px;
+        }
+
+        .chatlog__markdown-pre {
+            background-color: #2f3136;
+            font-family: "Consolas", "Courier New", Courier, monospace;
+        }
+
+        .chatlog__markdown-pre--multiline {
+            margin-top: 0.25rem;
+            padding: 0.5rem;
+            border: 2px solid #282b30;
+            border-radius: 5px;
+            color: #b9bbbe;
+        }
+
+        .chatlog__markdown-pre--multiline.hljs {
+            background-color: inherit;
+            color: inherit;
+        }
+
+        .chatlog__markdown-pre--inline {
+            padding: 2px;
+            border-radius: 3px;
+            font-size: 0.85rem;
+        }
+
+        .chatlog__markdown-mention {
+            border-radius: 3px;
+            padding: 0 2px;
+            background-color: rgba(88, 101, 242, .3);
+            color: #dee0fc;
+            font-weight: 500;
+        }
+
+        .chatlog__markdown-mention:hover {
+            background-color: #5865f2;
+            color: #ffffff
+        }
+
+        .chatlog__markdown-timestamp {
+            border-radius: 3px;
+            padding: 0 2px;
+            color: #a3a6aa;
+        }
+
+        .chatlog__emoji {
+            width: 1.325rem;
+            height: 1.325rem;
+            margin: 0 0.06rem;
+            vertical-align: -0.4rem;
+        }
+
+        .chatlog__emoji--small {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        .chatlog__emoji--large {
+            width: 2.8rem;
+            height: 2.8rem;
+        }
+
+        .postamble {
+            padding: 1.25rem;
+        }
+
+        .postamble__entry {
+            color: #ffffff;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/solarized-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.chatlog__markdown-pre--multiline').forEach(e => hljs.highlightBlock(e));
+        });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.8.1/lottie.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.chatlog__sticker--media[data-source]').forEach(e => {
+                const imageDataUrl = e.getAttribute('data-source');
+
+                const anim = lottie.loadAnimation({
+                  container: e,
+                  renderer: 'svg',
+                  loop: true,
+                  autoplay: true,
+                  path: imageDataUrl
+                });
+
+                anim.addEventListener('data_failed', () =>
+                    e.innerHTML = '<strong>[Sticker cannot be rendered]</strong>'
+                );
+            });
+        });
+    </script>
+
+    <script>
+        function scrollToMessage(event, id) {
+            var element = document.getElementById('chatlog__message-container-' + id);
+            if (!element)
+                return;
+
+            event.preventDefault();
+            element.classList.add('chatlog__message-container--highlighted');
+
+            window.scrollTo({
+                top: element.getBoundingClientRect().top - document.body.getBoundingClientRect().top - (window.innerHeight / 2),
+                behavior: 'smooth'
+            });
+
+            window.setTimeout(function() {
+                element.classList.remove('chatlog__message-container--highlighted');
+            }, 2000);
+        }
+
+        function showSpoiler(event, element) {
+            if (!element)
+                return;
+
+            if (element.classList.contains('chatlog__attachment--hidden')) {
+                event.preventDefault();
+                element.classList.remove('chatlog__attachment--hidden');
+            }
+
+            if (element.classList.contains('chatlog__markdown-spoiler--hidden')) {
+                event.preventDefault();
+                element.classList.remove('chatlog__markdown-spoiler--hidden');
+            }
+        }
+    </script>
+
+    <svg style="display: none">
+        <symbol id="attachment-icon" viewBox="0 0 720 960">
+            <path fill="#f4f5fb" d="M50,935a25,25,0,0,1-25-25V50A25,25,0,0,1,50,25H519.6L695,201.32V910a25,25,0,0,1-25,25Z"/>
+            <path fill="#7789c4" d="M509.21,50,670,211.63V910H50V50H509.21M530,0H50A50,50,0,0,0,0,50V910a50,50,0,0,0,50,50H670a50,50,0,0,0,50-50h0V191Z"/>
+            <path fill="#f4f5fb" d="M530,215a25,25,0,0,1-25-25V50a25,25,0,0,1,16.23-23.41L693.41,198.77A25,25,0,0,1,670,215Z"/>
+            <path fill="#7789c4" d="M530,70.71,649.29,190H530V70.71M530,0a50,50,0,0,0-50,50V190a50,50,0,0,0,50,50H670a50,50,0,0,0,50-50Z"/>
+        </symbol>
+    </svg>
+</head>
+<body>
+
+<div class="preamble">
+    <div class="preamble__guild-icon-container">
+        <img class="preamble__guild-icon" src="https://cdn.discordapp.com/icons/837717753976061952/9ca5de1534549aa959ad4026661518b4.png" alt="Guild icon" loading="lazy">
+    </div>
+    <div class="preamble__entries-container">
+        <div class="preamble__entry">Lus&#237;adas</div>
+        <div class="preamble__entry">Canais de Scientia / or&#225;culo</div>
+
+            <div class="preamble__entry preamble__entry--small">ora&#231;&#227;o gr&#234;mica</div>
+
+    </div>
+</div>
+
+<div class="chatlog">
+
+
+
+<div class="chatlog__message-group">
+    <div id="chatlog__message-container-933846764241428520" class="chatlog__message-container chatlog__message-container--pinned" data-message-id="933846764241428520">
+        <div class="chatlog__message">
+            <div class="chatlog__message-aside">
+                    <img class="chatlog__avatar" src="https://cdn.discordapp.com/avatars/535850130247647245/df8e5834b642cfc4f8d4c383fd671b7c.png?size=512" alt="Avatar" loading="lazy">
+            </div>
+
+            <div class="chatlog__message-primary">
+                    <div class="chatlog__header">
+                        <span class="chatlog__author" style="color: rgb(7, 13, 61)" title="grēme#8351" data-user-id="535850130247647245">Grēme (anti exemplo)</span>
+
+
+                        <span class="chatlog__timestamp">20-Jan-22 07:13 PM</span>
+                    </div>
+
+                    <div class="chatlog__content chatlog__markdown">
+                        <span class="chatlog__markdown-preserve">Sejam bem recebidos, aqui exporei minha captura curada.
+
+Iniciaremos este canal com estudo de Metaf&#237;sica de Arist&#243;teles em (mais ou menos) uma semana. At&#233; l&#225; divulgarei ideias que s&#227;o fundamento de boa cogita&#231;&#227;o.
+
+Desejo que aqueles que n&#227;o participam, possam, com leitura de meu estudo, ascender.
+
+S&#243; eu e <span class="chatlog__markdown-mention" style="color: rgb(255, 174, 174); background-color: rgba(255, 174, 174, 0.1);">@Abstractor</span> es  temos licen&#231;a para escrever aqui, caso queiras obter licen&#231;a, diz me.</span>
+
+                    </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="chatlog__message-group">
+    <div id="chatlog__message-container-934239913392635955" class="chatlog__message-container " data-message-id="934239913392635955">
+        <div class="chatlog__message">
+            <div class="chatlog__message-aside">
+                    <img class="chatlog__avatar" src="https://cdn.discordapp.com/avatars/535850130247647245/df8e5834b642cfc4f8d4c383fd671b7c.png?size=512" alt="Avatar" loading="lazy">
+            </div>
+
+            <div class="chatlog__message-primary">
+                    <div class="chatlog__header">
+                        <span class="chatlog__author" style="color: rgb(7, 13, 61)" title="grēme#8351" data-user-id="535850130247647245">Grēme (anti exemplo)</span>
+
+
+                        <span class="chatlog__timestamp">21-Jan-22 09:15 PM</span>
+                    </div>
+
+                    <div class="chatlog__content chatlog__markdown">
+                        <span class="chatlog__markdown-preserve"><span class="chatlog__markdown-pre chatlog__markdown-pre--inline">~~Argumento e consenso~~</span>
+
+1. <strong>Natura de argumento</strong>
+Com argumentos propomos altera&#231;&#227;o de status de quest&#245;es (em disputa ou n&#227;o). 
+Existem dois modos de resolver disputas: consenso ou vict&#243;ria argumentativa.</span>
+
+                            <span class="chatlog__edited-timestamp" title="13-May-22 06:15 AM">(edited)</span>
+                    </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+    <div id="chatlog__message-container-934239998289522688" class="chatlog__message-container " data-message-id="934239998289522688">
+        <div class="chatlog__message">
+            <div class="chatlog__message-aside">
+                    <div class="chatlog__short-timestamp" title="21-Jan-22 09:16 PM">21:16</div>
+            </div>
+
+            <div class="chatlog__message-primary">
+
+                    <div class="chatlog__content chatlog__markdown">
+                        <span class="chatlog__markdown-preserve">2. <strong>Composi&#231;&#227;o de argumento </strong>
+Cada argumento tem em si premissas, que s&#227;o compostas por voc&#225;bulos com defini&#231;&#245;es que umas vezes assumimos que s&#227;o partilhadas (at&#233; ao n&#237;vel intuitivo), e outras vezes interrogamos, podendo depois iniciar seu debate, t&#227;o bem.</span>
+
+                            <span class="chatlog__edited-timestamp" title="13-May-22 06:16 AM">(edited)</span>
+                    </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+    <div id="chatlog__message-container-934240064689553420" class="chatlog__message-container " data-message-id="934240064689553420">
+        <div class="chatlog__message">
+            <div class="chatlog__message-aside">
+                    <div class="chatlog__short-timestamp" title="21-Jan-22 09:16 PM">21:16</div>
+            </div>
+
+            <div class="chatlog__message-primary">
+
+                    <div class="chatlog__content chatlog__markdown">
+                        <span class="chatlog__markdown-preserve">Podemos definir de l&#243;gico modo, explicando que &#233; aquela coisa que queremos definir de modo a que essa defini&#231;&#227;o n&#227;o possa ser atribu&#237;da a outra coisa que n&#227;o aquela. Ou podemos definir por ess&#234;ncia, por extremos, para uso; descrevendo de modo que satisfa&#231;a aqueles que debatem para que solu&#231;&#227;o seja obtida ou discuss&#227;o continuada.
+
+<em>“...porque ligamos as nossas concep&#231;&#245;es a determinadas palavras para as exprimirmos oralmente, e porque nos lembram mais depressa as palavras que as coisas, s&#243; conseguimos conceber algo distintamente se separarmos completamente aquilo que concebemos das palavras que escolhemos para o exprimir&quot; 
+Descartes, Princ&#237;pios de Filosofia</em>
+
+✠----------✠-----------✠----------✠</span>
+
+                            <span class="chatlog__edited-timestamp" title="13-May-22 06:08 AM">(edited)</span>
+                    </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+    <div id="chatlog__message-container-934240114677268582" class="chatlog__message-container " data-message-id="934240114677268582">
+        <div class="chatlog__message">
+            <div class="chatlog__message-aside">
+                    <div class="chatlog__short-timestamp" title="21-Jan-22 09:16 PM">21:16</div>
+            </div>
+
+            <div class="chatlog__message-primary">
+
+                    <div class="chatlog__content chatlog__markdown">
+                        <span class="chatlog__markdown-preserve"><span class="chatlog__markdown-pre chatlog__markdown-pre--inline">~~Enquadramento:~~</span>
+
+&#233; uma dada estrutura de condicionalidade que usamos para julgar cada momento.
+Por exemplo, enquadramento l&#243;gico ou enquadramento de educa&#231;&#227;o, uns mais concretos e outros mais abstractos, mais objectivos ou subjectivos. Adoptamos v&#225;rios em nosso quotidiano interagindo com mundo, de esse modo sabemos que n&#227;o faz sentido dizer que Camilo &#233; Gr&#234;me, e sei que se gritar com algum professor serei expulso de sala de aula.
+Em constante labor e muta&#231;&#227;o temos aquele enquadramento que tem em si todos outros, que constitui nossa faculdade de julgar.
+
+Pode ser necess&#225;rio questionar enquadramento quando notamos que nosso advers&#225;rio assume certos efeitos enquanto auto evidentes, que n&#227;o derivam de l&#243;gico modo, mesmo usando iguais defini&#231;&#245;es a n&#243;s.</span>
+
+                            <span class="chatlog__edited-timestamp" title="13-May-22 06:17 AM">(edited)</span>
+                    </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+    <div id="chatlog__message-container-934240198508826645" class="chatlog__message-container " data-message-id="934240198508826645">
+        <div class="chatlog__message">
+            <div class="chatlog__message-aside">
+                    <div class="chatlog__short-timestamp" title="21-Jan-22 09:17 PM">21:17</div>
+            </div>
+
+            <div class="chatlog__message-primary">
+
+                    <div class="chatlog__content chatlog__markdown">
+                        <span class="chatlog__markdown-preserve">Tendo boas defini&#231;&#245;es, que respeitam esta pulcra rela&#231;&#227;o significante-signo-significa&#231;&#227;o, podemos calcular validade de argumento, por coer&#234;ncia de suas premissas, porque um argumento pode ter s&#243; premissas e conclus&#227;o veras, e mesmo de esse modo ser inv&#225;lido.
+
+<strong>Por exemplo:</strong>
+Todos camaradas s&#227;o Homens. Gr&#234;me &#233; Homem. Logo, Gr&#234;me &#233; um camarada.
+Notemos que mesmo sendo veras estas tr&#234;s afirma&#231;&#245;es, temos uma conclus&#227;o que n&#227;o &#233; substanciada por suas premissas.
+
+Quando todas nossas premissas s&#227;o veras e argumento &#233; v&#225;lido, obtemos solidez em nossa argumenta&#231;&#227;o. Procuremos isto!
+
+
+✠----------✠-----------✠-----------✠</span>
+
+                            <span class="chatlog__edited-timestamp" title="13-May-22 06:17 AM">(edited)</span>
+                    </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+    <div id="chatlog__message-container-934240277722452088" class="chatlog__message-container " data-message-id="934240277722452088">
+        <div class="chatlog__message">
+            <div class="chatlog__message-aside">
+                    <div class="chatlog__short-timestamp" title="21-Jan-22 09:17 PM">21:17</div>
+            </div>
+
+            <div class="chatlog__message-primary">
+
+                    <div class="chatlog__content chatlog__markdown">
+                        <span class="chatlog__markdown-preserve">3. <strong>&#211;nus de prova</strong>
+Quem faz asser&#231;&#227;o positiva tem sempre &#243;nus de prova de seu lado. Quem diz que algo foi, &#233;, ou ser&#225;, ou deve ser, tem sempre dever de provar sua afirma&#231;&#227;o.
+Este &#243;nus deve ser algo tomado por s&#233;rio por todos n&#243;s, porque construir um argumento de qualquer quest&#227;o que tomemos por resolvida ou n&#227;o, &#233; uma forma de afugentar papaguea&#231;&#227;o de nossas mentes.
+Verdade &#233; detectada sempre em nossas mentes, por isso n&#227;o existe colec&#231;&#227;o de informa&#231;&#227;o que seja por si prova de alguma coisa. Verdade &#233; primeiro detectada em nossa intui&#231;&#227;o, que pode levar nos a procurar tais colec&#231;&#245;es de informa&#231;&#227;o para depois enquadrar e explicar alguma coisa, ou surge em interpreta&#231;&#227;o de colec&#231;&#245;es de informa&#231;&#227;o e explica&#231;&#227;o de suas liga&#231;&#245;es.
+Notemos, por exemplo, que se fa&#231;o alguma asser&#231;&#227;o de Hist&#243;ria, de algo que acredito que sucedeu em anteriores tempos, e minha &#250;nica justifica&#231;&#227;o &#233; uma asser&#231;&#227;o de um qualquer historiador, estarei, em esse caso hipot&#233;tico, pedindo a algu&#233;m que acredite em aquilo de que fiz asser&#231;&#227;o, confiando em mesmo historiador que eu, mas vera prova seria descrever aquelas coisas em mundo que d&#227;o sentido &#224; minha asser&#231;&#227;o de passado. <span class="chatlog__markdown-mention" style="color: rgb(255, 174, 174); background-color: rgba(255, 174, 174, 0.1);">@Abstractor</span></span>
+
+                            <span class="chatlog__edited-timestamp" title="13-May-22 06:17 AM">(edited)</span>
+                    </div>
+
+
+
+
+                    <div class="chatlog__reactions">
+                            <div class="chatlog__reaction" title="cruzdecristo">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="cruzdecristo" src="https://cdn.discordapp.com/emojis/838124492923338822.png" loading="lazy">
+                                <span class="chatlog__reaction-count">5</span>
+                            </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="chatlog__message-group">
+    <div id="chatlog__message-container-937513091904716931" class="chatlog__message-container " data-message-id="937513091904716931">
+        <div class="chatlog__message">
+            <div class="chatlog__message-aside">
+                    <img class="chatlog__avatar" src="https://cdn.discordapp.com/avatars/535850130247647245/df8e5834b642cfc4f8d4c383fd671b7c.png?size=512" alt="Avatar" loading="lazy">
+            </div>
+
+            <div class="chatlog__message-primary">
+                    <div class="chatlog__header">
+                        <span class="chatlog__author" style="color: rgb(7, 13, 61)" title="grēme#8351" data-user-id="535850130247647245">Grēme (anti exemplo)</span>
+
+
+                        <span class="chatlog__timestamp">30-Jan-22 10:02 PM</span>
+                    </div>
+
+                    <div class="chatlog__content chatlog__markdown">
+                        <span class="chatlog__markdown-preserve"><span class="chatlog__markdown-pre chatlog__markdown-pre--inline">~~ag&#234;ncia (humanidade)~~</span>
+
+&#233; aquele poder que o agente, enquanto ente de este mundo e utente de raz&#227;o, exercer&#225; em sistemas humanos em que participe. &#201; aquele poder de ser algu&#233;m e escolher, e que permite que a este sejam aplicadas regras e suas consequ&#234;ncias.
+Em interrede (vulgo, internet) aqueles que s&#227;o agentes, em seu quotidiano fora de a&#237;, nem sempre se d&#227;o enquanto tal; e em aquilo que diz respeito ao servidor, apenas ser&#225; reconhecida a ag&#234;ncia a aqueles que se d&#227;o enquanto Homem de modo coerente e que geram confian&#231;a referente &#224; sua natura: a aqueles que, sabendo ou n&#227;o, respeitam responsabilidade de ter um nome referente a uma imagem e express&#245;es orais e/ou escritas. 
+E porque agente &#233; aquele que &#233; algu&#233;m e escolhe, a este deve ser aberto direito de voto em plebiscito.</span>
+
+                            <span class="chatlog__edited-timestamp" title="13-May-22 06:18 AM">(edited)</span>
+                    </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+    <div id="chatlog__message-container-937513313041023027" class="chatlog__message-container " data-message-id="937513313041023027">
+        <div class="chatlog__message">
+            <div class="chatlog__message-aside">
+                    <div class="chatlog__short-timestamp" title="30-Jan-22 10:03 PM">22:03</div>
+            </div>
+
+            <div class="chatlog__message-primary">
+
+                    <div class="chatlog__content chatlog__markdown">
+                        <span class="chatlog__markdown-preserve">✠---------✠
+
+<span class="chatlog__markdown-pre chatlog__markdown-pre--inline">~~Aristocracia~~</span>
+
+esta ser&#225; aqui, aquele modo de governo de virtuosos, de aqueles que t&#234;m enquadramento mais pr&#243;ximo de excel&#234;ncia e que t&#234;m valores &#250;teis ao servidor. Aqui, estes existir&#227;o em hierarquia (Capatazes-mor e Maioral) e ter&#227;o seu c&#237;rculo superior de vota&#231;&#227;o, que dar&#225; permiss&#227;o de exist&#234;ncia a vota&#231;&#245;es de inferior patente.
+Aristocrata &#233; aquele que procura saber aquilo que quer, que fundamenta seus desejos (que sabe enquadrar eles) em tudo que refira causas p&#250;blicas, porque seus actos p&#250;blicos n&#227;o surgem de v&#225;cuo, mas seguem seu intelecto. Entre aristocratas tem de existir conhecimento, porque discuss&#227;o entre estes &#233; essencial ao sistema.
+Estes s&#227;o respons&#225;veis n&#227;o s&#243; por boa participa&#231;&#227;o mecan&#237;stica, mas por ser &#243;ptima parte de cultura de Lus&#237;adas, n&#227;o s&#243; por suas participa&#231;&#245;es individuais, mas por sua participa&#231;&#227;o em colectivo de aristocratas.</span>
+
+                            <span class="chatlog__edited-timestamp" title="13-May-22 06:18 AM">(edited)</span>
+                    </div>
+
+
+
+
+                    <div class="chatlog__reactions">
+                            <div class="chatlog__reaction" title="cruzdecristo">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="cruzdecristo" src="https://cdn.discordapp.com/emojis/838124492923338822.png" loading="lazy">
+                                <span class="chatlog__reaction-count">8</span>
+                            </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="chatlog__message-group">
+    <div id="chatlog__message-container-940057966290296853" class="chatlog__message-container " data-message-id="940057966290296853">
+        <div class="chatlog__message">
+            <div class="chatlog__message-aside">
+                    <img class="chatlog__avatar" src="https://cdn.discordapp.com/avatars/535850130247647245/df8e5834b642cfc4f8d4c383fd671b7c.png?size=512" alt="Avatar" loading="lazy">
+            </div>
+
+            <div class="chatlog__message-primary">
+                    <div class="chatlog__header">
+                        <span class="chatlog__author" style="color: rgb(7, 13, 61)" title="grēme#8351" data-user-id="535850130247647245">Grēme (anti exemplo)</span>
+
+
+                        <span class="chatlog__timestamp">06-Feb-22 10:34 PM</span>
+                    </div>
+
+                    <div class="chatlog__content chatlog__markdown">
+                        <span class="chatlog__markdown-preserve">Em estes dias foi disputada estrutura de publica&#231;&#227;o de imagens de corpos de Homens, que causam discuss&#227;o porque subjacente existe uma distin&#231;&#227;o a aceitar (ou n&#227;o), que nossos camaradas evitam discutir em favor de demonstra&#231;&#245;es de repulsa sem mais desenvolvimento, nomeadamente <strong>Camarada Capataz-mor Lignor&#243;fi</strong>, <strong>Camarada Capataz Luque</strong> e <strong>Camarada Ajudante Jean Bart</strong>.
+Ora, temos corpos e dividimos estes em tr&#234;s categorias de sexo: masculino, feminino e intersexo. Mesmo sem defini&#231;&#227;o l&#243;gica, ligamos a estas categorias aqueles cromossomas e impactos corporais macrosc&#243;picos que vemos de estes. Estas categorias n&#227;o temos por h&#225;bito discutir e assumimos alguma auto evid&#234;ncia e compreens&#227;o intuitiva referente a estes. 
+Depois, temos g&#233;nero, durante muito tempo tomado por angla imita&#231;&#227;o enquanto sin&#243;nimo de sexo, mas em nossos tempos, obt&#233;m conhecimento popular uma no&#231;&#227;o diferente, uma que descreve nossa rela&#231;&#227;o com esta categoria de corpo, em diferentes graus em cada indiv&#237;duo podendo ser abstra&#237;do e at&#233; “contr&#225;rio” a nosso corpo.
+Ligamos muitos tipos de ac&#231;&#227;o a nossas categorias de corpo, mas verdade &#233; que n&#227;o conhecemos sexos de isolado modo um em rela&#231;&#227;o ao outro e mesmo assim formamos uma identidade referente a este. E porque maioria de n&#243;s tem uma identidade de g&#233;nero (esta identidade de desempenho social determinada por inspira&#231;&#227;o em uma no&#231;&#227;o de exist&#234;ncia f&#237;sica, que tem origem em no&#231;&#245;es que temos de n&#243;s pr&#243;prios) que segue um sexo semelhante, &#233; dif&#237;cil conceber esta sequ&#234;ncia enquanto sendo de outro modo.</span>
+
+                    </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+    <div id="chatlog__message-container-940058068417400893" class="chatlog__message-container " data-message-id="940058068417400893">
+        <div class="chatlog__message">
+            <div class="chatlog__message-aside">
+                    <div class="chatlog__short-timestamp" title="06-Feb-22 10:35 PM">22:35</div>
+            </div>
+
+            <div class="chatlog__message-primary">
+
+                    <div class="chatlog__content chatlog__markdown">
+                        <span class="chatlog__markdown-preserve">Mas porque existe uma minoria que n&#227;o interpreta essa sequ&#234;ncia em suas vidas, devemos repudiar eles? Verdade &#233; que eles n&#227;o t&#234;m emp&#237;ricos que sirvam de explica&#231;&#227;o a seu favor, mas &#233; t&#227;o bem verdade que ningu&#233;m tem uma boa forma de descrever sua experi&#234;ncia a outros, demonstrando onde iniciam diferen&#231;as e terminam semelhan&#231;as; porque nos &#233; f&#225;cil sentir conformidade, nem sequer necessitamos de cogitar essas coisas.
+Por que raz&#227;o n&#227;o acreditar em outros Homens funcionais que v&#234;em seu ser aut&#234;ntico desviado de estes h&#225;bitos? 
+
+<strong>Ou acreditamos que existe uma categoria de corpo e uma categoria que &#233; viv&#234;ncia mental ligada a este que pode ser oposta a ele e/ou &#224;s expectativas culturais associadas a ele. Ou acreditamos que existe uma categoria de corpo e qualquer interpreta&#231;&#227;o que n&#227;o siga prescri&#231;&#245;es culturais de interpreta&#231;&#227;o de categoria de corpo simplesmente n&#227;o merece pr&#225;ctica, por alguma raz&#227;o…</strong></span>
+
+                            <span class="chatlog__edited-timestamp" title="06-Feb-22 10:37 PM">(edited)</span>
+                    </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+    <div id="chatlog__message-container-940058135538839592" class="chatlog__message-container " data-message-id="940058135538839592">
+        <div class="chatlog__message">
+            <div class="chatlog__message-aside">
+                    <div class="chatlog__short-timestamp" title="06-Feb-22 10:35 PM">22:35</div>
+            </div>
+
+            <div class="chatlog__message-primary">
+
+                    <div class="chatlog__content chatlog__markdown">
+                        <span class="chatlog__markdown-preserve">Ora, seres f&#237;sicos somos sempre e defendemos nossa auto determina&#231;&#227;o f&#237;sica, posse de nosso corpo e poder de ser fisicamente de nosso modo preferido. Seres metaf&#237;sicos somos sempre t&#227;o bem, e nossa metaf&#237;sica &#233; nossa mais pulcra parte, aquela parte humana! Mas negamos que esta possa ter for&#231;a em outros de modos diferentes que a n&#243;s porque nossas partes metaf&#237;sicas n&#227;o se mostram aos olhos? Somos mesmo assim? Muito esoterismo que pode ser n&#243;s j&#225; vivemos ele, para sempre oculto, em n&#243;s. Mas estes grandes mist&#233;rios n&#227;o terminam em n&#243;s e continuam para sempre em outros, por isso &#233; ben&#233;fica a f&#233; em outros, em for&#231;a de sua interpreta&#231;&#227;o, e labor comum com bom julgamento. Negar sem cogitar &#233; s&#243; fugir &#224; vida.</span>
+
+                    </div>
+
+
+
+
+                    <div class="chatlog__reactions">
+                            <div class="chatlog__reaction" title="cruzdecristo">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="cruzdecristo" src="https://cdn.discordapp.com/emojis/838124492923338822.png" loading="lazy">
+                                <span class="chatlog__reaction-count">4</span>
+                            </div>
+                            <div class="chatlog__reaction" title="thumbsdown">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="&#128078;" src="https://twemoji.maxcdn.com/2/svg/1f44e.svg" loading="lazy">
+                                <span class="chatlog__reaction-count">2</span>
+                            </div>
+                            <div class="chatlog__reaction" title="rofl">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="&#129315;" src="https://twemoji.maxcdn.com/2/svg/1f923.svg" loading="lazy">
+                                <span class="chatlog__reaction-count">2</span>
+                            </div>
+                            <div class="chatlog__reaction" title="moyai">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="&#128511;" src="https://twemoji.maxcdn.com/2/svg/1f5ff.svg" loading="lazy">
+                                <span class="chatlog__reaction-count">1</span>
+                            </div>
+                            <div class="chatlog__reaction" title="refractario">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="refractario" src="https://cdn.discordapp.com/emojis/911459526526529547.png" loading="lazy">
+                                <span class="chatlog__reaction-count">1</span>
+                            </div>
+                            <div class="chatlog__reaction" title="confusion">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="confusion" src="https://cdn.discordapp.com/emojis/866835091464650773.png" loading="lazy">
+                                <span class="chatlog__reaction-count">1</span>
+                            </div>
+                            <div class="chatlog__reaction" title="face_with_raised_eyebrow">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="&#129320;" src="https://twemoji.maxcdn.com/2/svg/1f928.svg" loading="lazy">
+                                <span class="chatlog__reaction-count">1</span>
+                            </div>
+                            <div class="chatlog__reaction" title="battery">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="&#128267;" src="https://twemoji.maxcdn.com/2/svg/1f50b.svg" loading="lazy">
+                                <span class="chatlog__reaction-count">1</span>
+                            </div>
+                            <div class="chatlog__reaction" title="joaokleber">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="joaokleber" src="https://cdn.discordapp.com/emojis/943148985013637150.png" loading="lazy">
+                                <span class="chatlog__reaction-count">1</span>
+                            </div>
+                            <div class="chatlog__reaction" title="Amarantino">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="Amarantino" src="https://cdn.discordapp.com/emojis/843212431220015117.png" loading="lazy">
+                                <span class="chatlog__reaction-count">1</span>
+                            </div>
+                            <div class="chatlog__reaction" title="kek">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="kek" src="https://cdn.discordapp.com/emojis/838067873879687178.png" loading="lazy">
+                                <span class="chatlog__reaction-count">1</span>
+                            </div>
+                            <div class="chatlog__reaction" title="kek">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="kek" src="https://cdn.discordapp.com/emojis/851521347984293928.png" loading="lazy">
+                                <span class="chatlog__reaction-count">1</span>
+                            </div>
+                            <div class="chatlog__reaction" title="joy">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="&#128514;" src="https://twemoji.maxcdn.com/2/svg/1f602.svg" loading="lazy">
+                                <span class="chatlog__reaction-count">1</span>
+                            </div>
+                            <div class="chatlog__reaction" title="middle_finger">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="&#128405;" src="https://twemoji.maxcdn.com/2/svg/1f595.svg" loading="lazy">
+                                <span class="chatlog__reaction-count">1</span>
+                            </div>
+                            <div class="chatlog__reaction" title="skull">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="&#128128;" src="https://twemoji.maxcdn.com/2/svg/1f480.svg" loading="lazy">
+                                <span class="chatlog__reaction-count">1</span>
+                            </div>
+                            <div class="chatlog__reaction" title="kaaba">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="&#128331;" src="https://twemoji.maxcdn.com/2/svg/1f54b.svg" loading="lazy">
+                                <span class="chatlog__reaction-count">1</span>
+                            </div>
+                            <div class="chatlog__reaction" title="flag_cn">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="&#127464;&#127475;" src="https://twemoji.maxcdn.com/2/svg/1f1e8-1f1f3.svg" loading="lazy">
+                                <span class="chatlog__reaction-count">1</span>
+                            </div>
+                            <div class="chatlog__reaction" title="weary">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="&#128553;" src="https://twemoji.maxcdn.com/2/svg/1f629.svg" loading="lazy">
+                                <span class="chatlog__reaction-count">1</span>
+                            </div>
+                            <div class="chatlog__reaction" title="monkey">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="&#128018;" src="https://twemoji.maxcdn.com/2/svg/1f412.svg" loading="lazy">
+                                <span class="chatlog__reaction-count">1</span>
+                            </div>
+                            <div class="chatlog__reaction" title="soja">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="soja" src="https://cdn.discordapp.com/emojis/880155077145419786.png" loading="lazy">
+                                <span class="chatlog__reaction-count">1</span>
+                            </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="chatlog__message-group">
+    <div id="chatlog__message-container-940391550586851411" class="chatlog__message-container " data-message-id="940391550586851411">
+        <div class="chatlog__message">
+            <div class="chatlog__message-aside">
+                    <img class="chatlog__avatar" src="https://cdn.discordapp.com/avatars/535850130247647245/df8e5834b642cfc4f8d4c383fd671b7c.png?size=512" alt="Avatar" loading="lazy">
+            </div>
+
+            <div class="chatlog__message-primary">
+                    <div class="chatlog__header">
+                        <span class="chatlog__author" style="color: rgb(7, 13, 61)" title="grēme#8351" data-user-id="535850130247647245">Grēme (anti exemplo)</span>
+
+
+                        <span class="chatlog__timestamp">07-Feb-22 08:40 PM</span>
+                    </div>
+
+                    <div class="chatlog__content chatlog__markdown">
+                        <span class="chatlog__markdown-preserve"><span class="chatlog__markdown-mention" style="color: rgb(255, 174, 174); background-color: rgba(255, 174, 174, 0.1);">@Abstractor</span> es! Depois de ler uma parte de Metaf&#237;sica de Arist&#243;teles e conversar com quem domina mais sua filosofia que eu, soube que devo ler antes Organon e F&#237;sica, de modo a captar melhor significa&#231;&#227;o de alguns nomes. Porque n&#227;o existe F&#237;sica em Portugu&#234;s de Portugal, amanh&#227; terei meu livro Physics e depois iniciarei leitura de esse livro com todos! Irei ler tamb&#233;m parte de Organon, mas meus Categorias e Da Interpreta&#231;&#227;o est&#227;o em casa, em Lisboa. Depois lerei esses.</span>
+
+                    </div>
+
+
+
+
+                    <div class="chatlog__reactions">
+                            <div class="chatlog__reaction" title="bandeira_da_monarquia">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="bandeira_da_monarquia" src="https://cdn.discordapp.com/emojis/837720269354958928.png" loading="lazy">
+                                <span class="chatlog__reaction-count">4</span>
+                            </div>
+                            <div class="chatlog__reaction" title="cruzdecristo">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="cruzdecristo" src="https://cdn.discordapp.com/emojis/838124492923338822.png" loading="lazy">
+                                <span class="chatlog__reaction-count">6</span>
+                            </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+    <div id="chatlog__message-container-940391682753593374" class="chatlog__message-container " data-message-id="940391682753593374">
+        <div class="chatlog__message">
+            <div class="chatlog__message-aside">
+                    <div class="chatlog__short-timestamp" title="07-Feb-22 08:40 PM">20:40</div>
+            </div>
+
+            <div class="chatlog__message-primary">
+
+                    <div class="chatlog__content chatlog__markdown">
+                        <span class="chatlog__markdown-preserve">Pe&#231;o desculpa por todos estes atrasados e faltas de publica&#231;&#227;o. Eu sou um cal&#227;o</span>
+
+                            <span class="chatlog__edited-timestamp" title="07-Feb-22 08:41 PM">(edited)</span>
+                    </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="chatlog__message-group">
+    <div id="chatlog__message-container-951501013989355520" class="chatlog__message-container " data-message-id="951501013989355520">
+        <div class="chatlog__message">
+            <div class="chatlog__message-aside">
+                    <img class="chatlog__avatar" src="https://cdn.discordapp.com/avatars/281914799040888834/43ebb287cacaca8d9090c8462f7d1002.png?size=512" alt="Avatar" loading="lazy">
+            </div>
+
+            <div class="chatlog__message-primary">
+                    <div class="chatlog__header">
+                        <span class="chatlog__author" style="color: rgb(42, 131, 192)" title="Eppiliph#9768" data-user-id="281914799040888834">Virg&#237;lio Mar&#227;o</span>
+
+
+                        <span class="chatlog__timestamp">10-Mar-22 12:25 PM</span>
+                    </div>
+
+                    <div class="chatlog__content chatlog__markdown">
+                        <span class="chatlog__markdown-preserve">&#211; or&#225;culo, ressucitai! Iluminai-nos a senda com vossa sabedoria; nutri nosso esp&#237;rito com vossa verdade. Falai que escutamos; dizei que j&#225; vos temos inclinados os ouvidos!</span>
+
+                    </div>
+
+
+
+
+                    <div class="chatlog__reactions">
+                            <div class="chatlog__reaction" title="dmanueli">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="dmanueli" src="https://cdn.discordapp.com/emojis/911436469044903986.png" loading="lazy">
+                                <span class="chatlog__reaction-count">3</span>
+                            </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="chatlog__message-group">
+    <div id="chatlog__message-container-952014956658823208" class="chatlog__message-container " data-message-id="952014956658823208">
+        <div class="chatlog__message">
+            <div class="chatlog__message-aside">
+                        <div class="chatlog__reference-symbol"></div>
+                    <img class="chatlog__avatar" src="https://cdn.discordapp.com/avatars/535850130247647245/df8e5834b642cfc4f8d4c383fd671b7c.png?size=512" alt="Avatar" loading="lazy">
+            </div>
+
+            <div class="chatlog__message-primary">
+                        <div class="chatlog__reference">
+                                <img class="chatlog__reference-avatar" src="https://cdn.discordapp.com/avatars/281914799040888834/43ebb287cacaca8d9090c8462f7d1002.png?size=512" alt="Avatar" loading="lazy">
+                                <div class="chatlog__reference-author" style="color: rgb(42, 131, 192)" title="Eppiliph#9768">Virg&#237;lio Mar&#227;o</div>
+                                <div class="chatlog__reference-content">
+                                    <span class="chatlog__reference-link" onclick="scrollToMessage(event, &#39;951501013989355520&#39;)">
+&#211; or&#225;culo, ressucitai! Iluminai-nos a senda com vossa sabedoria; nutri nosso esp&#237;rito com vossa verdade. Falai que escutamos; dizei que j&#225; vos temos inclinados os ouvidos!                                    </span>
+
+                                </div>
+                        </div>
+                    <div class="chatlog__header">
+                        <span class="chatlog__author" style="color: rgb(7, 13, 61)" title="grēme#8351" data-user-id="535850130247647245">Grēme (anti exemplo)</span>
+
+
+                        <span class="chatlog__timestamp">11-Mar-22 10:27 PM</span>
+                    </div>
+
+                    <div class="chatlog__content chatlog__markdown">
+                        <span class="chatlog__markdown-preserve">perdi me de aqui, mas volverei em breve tempo</span>
+
+                    </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="chatlog__message-group">
+    <div id="chatlog__message-container-953723498717671454" class="chatlog__message-container " data-message-id="953723498717671454">
+        <div class="chatlog__message">
+            <div class="chatlog__message-aside">
+                    <img class="chatlog__avatar" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="Avatar" loading="lazy">
+            </div>
+
+            <div class="chatlog__message-primary">
+                    <div class="chatlog__header">
+                        <span class="chatlog__author" style="" title="Deleted User#0000" data-user-id="456226577798135808">Deleted User</span>
+
+
+                        <span class="chatlog__timestamp">16-Mar-22 03:36 PM</span>
+                    </div>
+
+                    <div class="chatlog__content chatlog__markdown">
+                        <span class="chatlog__markdown-preserve">&#201; muito triste ver como ningu&#233;m liga pro gremim <img loading="lazy" class="chatlog__emoji " alt="riorui" title="riorui" src="https://cdn.discordapp.com/emojis/919669474620219532.png"></span>
+
+                    </div>
+
+
+
+
+                    <div class="chatlog__reactions">
+                            <div class="chatlog__reaction" title="worried">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="&#128543;" src="https://twemoji.maxcdn.com/2/svg/1f61f.svg" loading="lazy">
+                                <span class="chatlog__reaction-count">4</span>
+                            </div>
+                            <div class="chatlog__reaction" title="regional_indicator_n">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="&#127475;" src="https://twemoji.maxcdn.com/2/svg/1f1f3.svg" loading="lazy">
+                                <span class="chatlog__reaction-count">1</span>
+                            </div>
+                            <div class="chatlog__reaction" title="regional_indicator_u">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="&#127482;" src="https://twemoji.maxcdn.com/2/svg/1f1fa.svg" loading="lazy">
+                                <span class="chatlog__reaction-count">1</span>
+                            </div>
+                            <div class="chatlog__reaction" title="regional_indicator_m">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="&#127474;" src="https://twemoji.maxcdn.com/2/svg/1f1f2.svg" loading="lazy">
+                                <span class="chatlog__reaction-count">1</span>
+                            </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="chatlog__message-group">
+    <div id="chatlog__message-container-974620108649533440" class="chatlog__message-container " data-message-id="974620108649533440">
+        <div class="chatlog__message">
+            <div class="chatlog__message-aside">
+                    <img class="chatlog__avatar" src="https://cdn.discordapp.com/avatars/535850130247647245/df8e5834b642cfc4f8d4c383fd671b7c.png?size=512" alt="Avatar" loading="lazy">
+            </div>
+
+            <div class="chatlog__message-primary">
+                    <div class="chatlog__header">
+                        <span class="chatlog__author" style="color: rgb(7, 13, 61)" title="grēme#8351" data-user-id="535850130247647245">Grēme (anti exemplo)</span>
+
+
+                        <span class="chatlog__timestamp">13-May-22 07:32 AM</span>
+                    </div>
+
+
+                    <div class="chatlog__attachment " onclick="">
+
+                            <a href="https://cdn.discordapp.com/attachments/933837372876009552/974620108473397308/favpng_heraldry-sea-lion-line-art.png">
+                                <img class="chatlog__attachment-media" src="https://cdn.discordapp.com/attachments/933837372876009552/974620108473397308/favpng_heraldry-sea-lion-line-art.png" alt="Image attachment" title="Image: favpng_heraldry-sea-lion-line-art.png (456,74 KB)" loading="lazy">
+                            </a>
+                    </div>
+
+
+
+            </div>
+        </div>
+    </div>
+    <div id="chatlog__message-container-974620209132470322" class="chatlog__message-container " data-message-id="974620209132470322">
+        <div class="chatlog__message">
+            <div class="chatlog__message-aside">
+                    <div class="chatlog__short-timestamp" title="13-May-22 07:32 AM">07:32</div>
+            </div>
+
+            <div class="chatlog__message-primary">
+
+                    <div class="chatlog__content chatlog__markdown">
+                        <span class="chatlog__markdown-preserve"><span class="chatlog__markdown-pre chatlog__markdown-pre--inline">~~Amor~~</span>
+
+<strong>1.</strong> <strong>Admira&#231;&#227;o</strong>
+<strong>1.1</strong> conhecimento de pulcritude m&#225;xima diferente, per vis&#227;o de obten&#231;&#227;o de eis isso de pulcritude inef&#225;vel, gerada per processos desconhecidos- mist&#233;rios
+<strong>1.1.1</strong> mist&#233;rios- natura geradora de pulcritude, de lento modo decifrada; nunca completamente, que &#233; em eterna expans&#227;o.
+<strong>1.1.2</strong> auto cepticismo- que admiramos senten&#231;a de eis ele apaixonante, mas n&#227;o conhecemos completamente eis eles processos de este, humildemente ouvimos ele.
+
+<strong>2. Identifica&#231;&#227;o</strong>
+<strong>2.1 </strong>conhecimento de pulcritude m&#225;xima semelhante, igual ou an&#225;loga a eis ele ente apaixonado, que partilha de parte de ideias de eis ele apaixonante, e que tem por fins eles, obtidos em vida.
+<strong>2.1.1</strong> confian&#231;a- previs&#227;o de futuro feliz per diferen&#231;a e per semelhan&#231;a/igualdade/analogia que tem em rela&#231;&#227;o a eis ele apaixonante. Per diferen&#231;a, que v&#234; em diferen&#231;as uma forma de salva&#231;&#227;o, per satisfa&#231;&#227;o de necessidades internas e externas que eis ele apaixonante proporciona per forte e &#250;til liga&#231;&#227;o, e per semelhan&#231;a/igualdade/analogia em eis elas coisas em que n&#227;o podem diferir tanto/nada, pera seguir uma via igual, e n&#227;o existirem previs&#245;es de solid&#227;o per vontade de um.
+
+...Calculados intuitivamente sempre em algum grau, revelados lentamente per conversas amorosas, apaixonadas; tidas enquanto miss&#227;o de vida. Amor &#233; filosofia de eis ele outro.</span>
+
+                            <span class="chatlog__edited-timestamp" title="13-May-22 03:04 PM">(edited)</span>
+                    </div>
+
+
+
+
+                    <div class="chatlog__reactions">
+                            <div class="chatlog__reaction" title="cruzdecristo">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="cruzdecristo" src="https://cdn.discordapp.com/emojis/838124492923338822.png" loading="lazy">
+                                <span class="chatlog__reaction-count">4</span>
+                            </div>
+                            <div class="chatlog__reaction" title="dmanueli">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="dmanueli" src="https://cdn.discordapp.com/emojis/911436469044903986.png" loading="lazy">
+                                <span class="chatlog__reaction-count">3</span>
+                            </div>
+                            <div class="chatlog__reaction" title="heart">
+                                <img class="chatlog__emoji chatlog__emoji--small" alt="❤️" src="https://twemoji.maxcdn.com/2/svg/2764.svg" loading="lazy">
+                                <span class="chatlog__reaction-count">1</span>
+                            </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</div>
+
+<div class="postamble">
+    <div class="postamble__entry">Exported 19 message(s)</div>
+</div>
+
+</body>
+
+</html>
